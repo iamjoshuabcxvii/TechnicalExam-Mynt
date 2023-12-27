@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/shipping")
@@ -20,7 +21,7 @@ public class MainController {
     DeliveryService deliveryService;
 
     @PostMapping("/calculate")
-    public ResponseEntity<BaseResponse> computeShippingCost(@RequestBody RequestModel requestModel) throws ErrorException, IOException {
+    public ResponseEntity<BaseResponse> computeShippingCost(@RequestBody RequestModel requestModel) throws ErrorException, IOException, ParseException {
         return new ResponseEntity<>(deliveryService.calculate(requestModel), HttpStatus.OK);
     }
 }

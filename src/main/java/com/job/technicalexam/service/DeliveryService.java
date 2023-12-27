@@ -1,14 +1,15 @@
 package com.job.technicalexam.service;
 
+import com.job.technicalexam.config.exception.ErrorException;
 import com.job.technicalexam.model.BaseResponse;
 import com.job.technicalexam.model.DatabaseModel;
-import com.job.technicalexam.config.exception.ErrorException;
 import com.job.technicalexam.model.RequestModel;
 import com.job.technicalexam.repository.DatabaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class DeliveryService {
     @Autowired
     VoucherService voucherService;
 
-    public BaseResponse calculate(RequestModel requestModel) throws ErrorException, IOException {
+    public BaseResponse calculate(RequestModel requestModel) throws ErrorException, IOException, ParseException {
         boolean hasDiscount = Optional.ofNullable(requestModel.getVoucherCode()).isPresent() ? true : false;
         BaseResponse baseResponse = new BaseResponse();
         double inputtedLength, inputtedWidth, inputtedHeight, computedVolume = 0;
@@ -84,7 +85,7 @@ public class DeliveryService {
         return baseResponse;
     }
 
-    private double computeForPrice(final double weightOrVolume, double price, boolean hasDiscount, RequestModel requestModel) throws IOException, ErrorException {
+    private double computeForPrice(final double weightOrVolume, double price, boolean hasDiscount, RequestModel requestModel) throws IOException, ErrorException, ParseException {
         double totalAmount = 0;
         if (hasDiscount) {
             totalAmount = voucherService.voucherApiCall(requestModel.getVoucherCode(), price, weightOrVolume);

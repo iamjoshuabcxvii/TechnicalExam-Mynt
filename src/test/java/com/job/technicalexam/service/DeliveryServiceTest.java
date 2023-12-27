@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,34 +30,34 @@ public class DeliveryServiceTest {
     DatabaseRepository databaseRepository;
 
     @Test
-    public void testRejectedParcelFlow() throws ErrorException {
+    public void testRejectedParcelFlow() throws ErrorException, IOException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(0, deliveryService.calculate(rejectParcelMockData()).getTotalAmount(), delta);
     }
 
     @Test
-    public void testHeavyParcelFlow() throws ErrorException {
+    public void testHeavyParcelFlow() throws ErrorException, IOException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(800, deliveryService.calculate(heavyParcelMockData()).getTotalAmount(), delta);
 
     }
 
     @Test
-    public void testSmallParcelFlow() throws ErrorException {
+    public void testSmallParcelFlow() throws ErrorException, IOException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(45.0, deliveryService.calculate(smallParcelMockData()).getTotalAmount(), delta);
 
     }
 
     @Test
-    public void testMediumParcelFlow() throws ErrorException {
+    public void testMediumParcelFlow() throws ErrorException, IOException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(80.0, deliveryService.calculate(mediumParcelMockData()).getTotalAmount(), delta);
 
     }
 
     @Test
-    public void testLargeParcelFlow() throws ErrorException {
+    public void testLargeParcelFlow() throws ErrorException, IOException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(150.0, deliveryService.calculate(largeParcelMockData()).getTotalAmount(), delta);
 
