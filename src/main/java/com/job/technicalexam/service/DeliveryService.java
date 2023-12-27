@@ -2,13 +2,13 @@ package com.job.technicalexam.service;
 
 import com.job.technicalexam.model.BaseResponse;
 import com.job.technicalexam.model.DatabaseModel;
-import com.job.technicalexam.model.ErrorResponse;
+import com.job.technicalexam.config.exception.ErrorException;
 import com.job.technicalexam.model.RequestModel;
 import com.job.technicalexam.repository.DatabaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +24,7 @@ public class DeliveryService {
     @Autowired
     VoucherService voucherService;
 
-    public BaseResponse calculate(RequestModel requestModel) throws ErrorResponse {
+    public BaseResponse calculate(RequestModel requestModel) throws ErrorException, IOException {
         boolean hasDiscount = Optional.ofNullable(requestModel.getVoucherCode()).isPresent() ? true : false;
         BaseResponse baseResponse = new BaseResponse();
         double inputtedLength, inputtedWidth, inputtedHeight, computedVolume = 0;
@@ -52,8 +52,7 @@ public class DeliveryService {
             databaseModelTwo = databaseConfig.stream().filter(record -> record.getPriority() == 2).collect(Collectors.toList()).get(0);
             if (inputtedWeight.get() >= databaseModelOne.getMinWeight()) {
                 // REJECT FLow
-
-                throw new ErrorResponse(HttpStatus.OK, REJECT.name());
+                throw new ErrorException(REJECT.name());
             } else if (inputtedWeight.get() >= databaseModelTwo.getMinWeight() && inputtedWeight.get() <= databaseModelTwo.getMaxWeight()) {
                 //Heavy Flow
                 baseResponse.setTotalAmount(computeForPrice(inputtedWeight.get(), databaseModelTwo.getPrice(), hasDiscount, requestModel));
@@ -85,9 +84,9 @@ public class DeliveryService {
         return baseResponse;
     }
 
-    private double computeForPrice(final double weightOrVolume, double price, boolean hasDiscount, RequestModel requestModel) {
+    private double computeForPrice(final double weightOrVolume, double price, boolean hasDiscount, RequestModel requestModel) throws IOException, ErrorException {
         double totalAmount = 0;
-        if(hasDiscount) {
+        if (hasDiscount) {
             totalAmount = voucherService.voucherApiCall(requestModel.getVoucherCode(), price, weightOrVolume);
         } else {
             totalAmount = price * weightOrVolume;

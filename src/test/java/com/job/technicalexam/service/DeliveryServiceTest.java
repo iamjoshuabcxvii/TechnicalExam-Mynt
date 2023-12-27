@@ -1,7 +1,7 @@
 package com.job.technicalexam.service;
 
 import com.job.technicalexam.model.DatabaseModel;
-import com.job.technicalexam.model.ErrorResponse;
+import com.job.technicalexam.config.exception.ErrorException;
 import com.job.technicalexam.model.RequestModel;
 import com.job.technicalexam.model.Volume;
 import com.job.technicalexam.repository.DatabaseRepository;
@@ -29,34 +29,34 @@ public class DeliveryServiceTest {
     DatabaseRepository databaseRepository;
 
     @Test
-    public void testRejectedParcelFlow() throws ErrorResponse {
+    public void testRejectedParcelFlow() throws ErrorException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(0, deliveryService.calculate(rejectParcelMockData()).getTotalAmount(), delta);
     }
 
     @Test
-    public void testHeavyParcelFlow() throws ErrorResponse {
+    public void testHeavyParcelFlow() throws ErrorException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(800, deliveryService.calculate(heavyParcelMockData()).getTotalAmount(), delta);
 
     }
 
     @Test
-    public void testSmallParcelFlow() throws ErrorResponse {
+    public void testSmallParcelFlow() throws ErrorException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(45.0, deliveryService.calculate(smallParcelMockData()).getTotalAmount(), delta);
 
     }
 
     @Test
-    public void testMediumParcelFlow() throws ErrorResponse {
+    public void testMediumParcelFlow() throws ErrorException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(80.0, deliveryService.calculate(mediumParcelMockData()).getTotalAmount(), delta);
 
     }
 
     @Test
-    public void testLargeParcelFlow() throws ErrorResponse {
+    public void testLargeParcelFlow() throws ErrorException {
         when(databaseRepository.findAll()).thenReturn(mockDatabaseContents());
         assertEquals(150.0, deliveryService.calculate(largeParcelMockData()).getTotalAmount(), delta);
 
